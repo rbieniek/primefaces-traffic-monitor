@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.bieniekconsulting.connector.snmp;
+package de.bieniekconsulting.trafficmonitor.connector.snmp;
 
 import java.util.UUID;
 
@@ -62,7 +62,7 @@ public class ConnectorTestCase
       ResourceAdapterArchive raa =
          ShrinkWrap.create(ResourceAdapterArchive.class, deploymentName + ".rar");
       JavaArchive ja = ShrinkWrap.create(JavaArchive.class, UUID.randomUUID().toString() + ".jar");
-      ja.addPackages(true, Package.getPackage("de.bieniekconsulting.connector.snmp"));
+      ja.addPackages(true, Package.getPackage("de.bieniekconsulting.trafficmonitor.connector.snmp"));
       raa.addAsLibrary(ja);
 
       raa.addAsManifestResource("META-INF/ironjacamar.xml", "ironjacamar.xml");

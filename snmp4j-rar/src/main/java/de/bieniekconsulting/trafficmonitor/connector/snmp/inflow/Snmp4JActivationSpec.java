@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.bieniekconsulting.connector.snmp.inflow;
+package de.bieniekconsulting.trafficmonitor.connector.snmp.inflow;
 
 import org.jboss.logging.Logger;
 
@@ -33,7 +33,7 @@ import javax.resource.spi.ResourceAdapter;
  *
  * @version $Revision: $
  */
-@Activation(messageListeners = { de.bieniekconsulting.connector.snmp.inflow.Snmp4JMessageListener.class })
+@Activation(messageListeners = { de.bieniekconsulting.trafficmonitor.connector.snmp.inflow.Snmp4JMessageListener.class })
 public class Snmp4JActivationSpec implements ActivationSpec
 {
 

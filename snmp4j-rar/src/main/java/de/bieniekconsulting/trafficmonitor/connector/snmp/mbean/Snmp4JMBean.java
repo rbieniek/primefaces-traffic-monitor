@@ -19,18 +19,18 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.bieniekconsulting.connector.snmp.inflow;
+package de.bieniekconsulting.trafficmonitor.connector.snmp.mbean;
 
 /**
- * Snmp4JMessageListener
+ * Snmp4JMBean
  *
  * @version $Revision: $
  */
-public interface Snmp4JMessageListener
+public interface Snmp4JMBean
 {
    /**
-    * Receive message
-    * @param msg String.
+    * Call me
+    * @throws Exception exception
     */
-   public void onMessage(String msg);
+   public void callMe() throws Exception;
 }

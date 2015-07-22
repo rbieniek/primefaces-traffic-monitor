@@ -21,8 +21,8 @@
  */
 package de.bieniekconsulting.trafficmonitor.connector.snmp;
 
-import de.bieniekconsulting.connector.snmp.inflow.Snmp4JActivation;
-import de.bieniekconsulting.connector.snmp.inflow.Snmp4JActivationSpec;
+import de.bieniekconsulting.trafficmonitor.connector.snmp.inflow.Snmp4JActivation;
+import de.bieniekconsulting.trafficmonitor.connector.snmp.inflow.Snmp4JActivationSpec;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -36,7 +36,6 @@ import javax.resource.spi.ResourceAdapter;
 import javax.resource.spi.ResourceAdapterInternalException;
 import javax.resource.spi.TransactionSupport;
 import javax.resource.spi.endpoint.MessageEndpointFactory;
-
 import javax.transaction.xa.XAResource;
 
 /**
