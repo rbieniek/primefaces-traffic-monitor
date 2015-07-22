@@ -19,21 +19,19 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.bieniekconsulting.connector.snmp;
+package de.bieniekconsulting.trafficmonitor.connector.snmp;
+
+import java.io.Serializable;
+
+import javax.resource.Referenceable;
 
 /**
- * Snmp4JConnection
+ * Snmp4JAdminObject
  *
  * @version $Revision: $
  */
-public interface Snmp4JConnection
+public interface Snmp4JAdminObject extends Referenceable, Serializable
 {
-   /**
-    * Call me
-    */
-   public void callMe();
-   /**
-    * Close
-    */
-   public void close();
+
+
 }

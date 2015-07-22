@@ -19,19 +19,26 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.bieniekconsulting.connector.snmp;
+package de.bieniekconsulting.trafficmonitor.connector.snmp;
 
 import java.io.Serializable;
 
 import javax.resource.Referenceable;
+import javax.resource.ResourceException;
 
 /**
- * Snmp4JAdminObject
+ * Snmp4JConnectionFactory
  *
  * @version $Revision: $
  */
-public interface Snmp4JAdminObject extends Referenceable, Serializable
+public interface Snmp4JConnectionFactory extends Serializable, Referenceable
 {
-
+   /** 
+    * Get connection from factory
+    *
+    * @return Snmp4JConnection instance
+    * @exception ResourceException Thrown if a connection can't be obtained
+    */
+   public Snmp4JConnection getConnection() throws ResourceException;
 
 }

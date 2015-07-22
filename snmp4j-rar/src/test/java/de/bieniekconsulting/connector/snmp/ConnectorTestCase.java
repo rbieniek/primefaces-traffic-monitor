@@ -22,19 +22,21 @@
 package de.bieniekconsulting.connector.snmp;
 
 import java.util.UUID;
+
 import org.jboss.logging.Logger;
 
 import javax.annotation.Resource;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import de.bieniekconsulting.trafficmonitor.connector.snmp.Snmp4JConnection;
+import de.bieniekconsulting.trafficmonitor.connector.snmp.Snmp4JConnectionFactory;
 import static org.junit.Assert.*;
 
 /**

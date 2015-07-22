@@ -25,8 +25,8 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import javax.naming.InitialContext;
 
-import de.bieniekconsulting.connector.snmp.Snmp4JConnection;
-import de.bieniekconsulting.connector.snmp.Snmp4JConnectionFactory;
+import de.bieniekconsulting.trafficmonitor.connector.snmp.Snmp4JConnection;
+import de.bieniekconsulting.trafficmonitor.connector.snmp.Snmp4JConnectionFactory;
 
 /**
  * Snmp4JMBeanImpl

@@ -19,51 +19,21 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.bieniekconsulting.connector.snmp;
-
-import org.jboss.logging.Logger;
+package de.bieniekconsulting.trafficmonitor.connector.snmp;
 
 /**
- * Snmp4JConnectionImpl
+ * Snmp4JConnection
  *
  * @version $Revision: $
  */
-public class Snmp4JConnectionImpl implements Snmp4JConnection
+public interface Snmp4JConnection
 {
-   /** The logger */
-   private static Logger log = Logger.getLogger(Snmp4JConnectionImpl.class.getName());
-
-   /** ManagedConnection */
-   private Snmp4JManagedConnection mc;
-
-   /** ManagedConnectionFactory */
-   private Snmp4JManagedConnectionFactory mcf;
-
-   /**
-    * Default constructor
-    * @param mc Snmp4JManagedConnection
-    * @param mcf Snmp4JManagedConnectionFactory
-    */
-   public Snmp4JConnectionImpl(Snmp4JManagedConnection mc, Snmp4JManagedConnectionFactory mcf)
-   {
-      this.mc = mc;
-      this.mcf = mcf;
-   }
-
    /**
     * Call me
     */
-   public void callMe()
-   {
-      mc.callMe();
-   }
-
+   public void callMe();
    /**
     * Close
     */
-   public void close()
-   {
-      mc.closeHandle(this);
-   }
-
+   public void close();
 }
