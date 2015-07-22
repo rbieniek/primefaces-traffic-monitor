@@ -21,7 +21,7 @@
  */
 package de.bieniekconsulting.connector.snmp.inflow;
 
-import de.bieniekconsulting.connector.snmp.Snmp4JResourceAdapter;
+import de.bieniekconsulting.trafficmonitor.connector.snmp.Snmp4JResourceAdapter;
 
 import javax.resource.ResourceException;
 import javax.resource.spi.endpoint.MessageEndpointFactory;

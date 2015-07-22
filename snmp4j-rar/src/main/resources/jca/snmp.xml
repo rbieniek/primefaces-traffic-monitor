@@ -23,7 +23,7 @@
 -->
 
 <deployment>
-  <bean name="Snmp4J" interface="de.bieniekconsulting.connector.snmp.mbean.Snmp4JMBean" class="de.bieniekconsulting.connector.snmp.mbean.Snmp4JMBeanImpl">
+  <bean name="Snmp4J" interface="de.bieniekconsulting.trafficmonitor.connector.snmp.mbean.Snmp4JMBean" class="de.bieniekconsulting.trafficmonitor.connector.snmp.mbean.Snmp4JMBeanImpl">
     <property name="MBeanServer">
         <inject bean="Kernel" property="MBeanServer"/>
     </property>

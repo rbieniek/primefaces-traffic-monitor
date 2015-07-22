@@ -30,12 +30,12 @@
   <transaction-support>NoTransaction</transaction-support>
   
   <connection-definitions>
-    <connection-definition class-name="de.bieniekconsulting.connector.snmp.Snmp4JManagedConnectionFactory" jndi-name="java:/eis/Snmp4JConnectionFactory" pool-name="Snmp4JConnectionFactory">
+    <connection-definition class-name="de.bieniekconsulting.trafficmonitor.connector.snmp.Snmp4JManagedConnectionFactory" jndi-name="java:/eis/Snmp4JConnectionFactory" pool-name="Snmp4JConnectionFactory">
     </connection-definition>
   </connection-definitions>
 
   <admin-objects>
-    <admin-object class-name="de.bieniekconsulting.connector.snmp.Snmp4JAdminObjectImpl" jndi-name="java:/eis/ao/Snmp4JAdminObject">
+    <admin-object class-name="de.bieniekconsulting.trafficmonitor.connector.snmp.Snmp4JAdminObjectImpl" jndi-name="java:/eis/ao/Snmp4JAdminObject">
     </admin-object>
   </admin-objects>
 
