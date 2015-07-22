@@ -135,6 +135,8 @@
     <version.org.jboss.ironjacamar>1.2.4.Final</version.org.jboss.ironjacamar>
     <version.org.jboss.logging>3.3.0.Final</version.org.jboss.logging>
 
+    <version.org.snmp4j>1.10.1</version.org.snmp4j>
+
     <version.org.easytesting.core>2.0M10</version.org.easytesting.core>
     <version.junit.junit>4.11</version.junit.junit>
     <version.org.mockito>1.9.5</version.org.mockito>
@@ -170,6 +172,11 @@
       <dependency>
 	<groupId>org.slf4j</groupId>
 	<artifactId>jcl-over-slf4j</artifactId>
+	<version>${version.org.slf4j}</version>
+      </dependency>
+      <dependency>
+	<groupId>org.slf4j</groupId>
+	<artifactId>log4j-over-slf4j</artifactId>
 	<version>${version.org.slf4j}</version>
       </dependency>
       <dependency>
@@ -303,6 +310,17 @@
           <exclusion>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
+          </exclusion>
+	</exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.snmp4j</groupId>
+        <artifactId>snmp4j</artifactId>
+        <version>${version.org.snmp4j}</version>
+	<exclusions>
+          <exclusion>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
           </exclusion>
 	</exclusions>
       </dependency>
