@@ -22,6 +22,7 @@
 package de.bieniekconsulting.trafficmonitor.connector.snmp;
 
 import java.io.Serializable;
+import java.net.InetAddress;
 
 import javax.resource.Referenceable;
 import javax.resource.ResourceException;
@@ -39,6 +40,13 @@ public interface Snmp4JConnectionFactory extends Serializable, Referenceable
     * @return Snmp4JConnection instance
     * @exception ResourceException Thrown if a connection can't be obtained
     */
-   public Snmp4JConnection getConnection() throws ResourceException;
+   public Snmp4JConnection getConnection(InetAddress address, String community) throws ResourceException;
 
+   /** 
+    * Get connection from factory
+    *
+    * @return Snmp4JConnection instance
+    * @exception ResourceException Thrown if a connection can't be obtained
+    */
+   public Snmp4JConnection getConnection(InetAddress address, int port, String community) throws ResourceException;
 }

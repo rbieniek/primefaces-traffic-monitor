@@ -21,6 +21,8 @@
  */
 package de.bieniekconsulting.trafficmonitor.connector.snmp.mbean;
 
+import java.net.InetAddress;
+
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import javax.naming.InitialContext;
@@ -88,20 +90,46 @@ public class Snmp4JMBeanImpl implements Snmp4JMBean
     * @throws Exception exception
     */
    @Override
-   public void callMe() throws Exception
+   public void callMe(InetAddress address, String community) throws Exception
    {
-      getConnection().callMe();
+      getConnection(address, community).callMe();
+   }
+
+   /**
+    * Call me
+    * @throws Exception exception
+    */
+   @Override
+   public void callMe(InetAddress address, int port, String community) throws Exception
+   {
+      getConnection(address, port, community).callMe();
    }
 
    /**
     * GetConnection
     * @return Snmp4JConnection
     */
-   private Snmp4JConnection getConnection() throws Exception
+   private Snmp4JConnection getConnection(InetAddress address, String community) throws Exception
    {
       InitialContext context = new InitialContext();
       Snmp4JConnectionFactory factory = (Snmp4JConnectionFactory)context.lookup(JNDI_NAME);
-      Snmp4JConnection conn = factory.getConnection();
+      Snmp4JConnection conn = factory.getConnection(address, community);
+      if (conn == null)
+      {
+         throw new RuntimeException("No connection");
+      }
+      return conn;
+   }
+
+   /**
+    * GetConnection
+    * @return Snmp4JConnection
+    */
+   private Snmp4JConnection getConnection(InetAddress address, int port, String community) throws Exception
+   {
+      InitialContext context = new InitialContext();
+      Snmp4JConnectionFactory factory = (Snmp4JConnectionFactory)context.lookup(JNDI_NAME);
+      Snmp4JConnection conn = factory.getConnection(address, port, community);
       if (conn == null)
       {
          throw new RuntimeException("No connection");

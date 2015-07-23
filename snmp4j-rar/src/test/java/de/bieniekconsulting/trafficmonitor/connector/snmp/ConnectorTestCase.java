@@ -21,6 +21,7 @@
  */
 package de.bieniekconsulting.trafficmonitor.connector.snmp;
 
+import java.net.InetAddress;
 import java.util.UUID;
 
 import org.jboss.logging.Logger;
@@ -32,6 +33,8 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -65,6 +68,13 @@ public class ConnectorTestCase
       ja.addPackages(true, Package.getPackage("de.bieniekconsulting.trafficmonitor.connector.snmp"));
       raa.addAsLibrary(ja);
 
+      MavenResolverSystem resolver = Maven.resolver();
+      
+      raa.addAsLibraries(resolver
+    		  .resolve("org.apache.commons:commons-lang3:3.3.2", "org.snmp4j:snmp4j:1.10.1")
+    		  .withoutTransitivity()
+    		  .as(JavaArchive.class));
+
       raa.addAsManifestResource("META-INF/ironjacamar.xml", "ironjacamar.xml");
 
       return raa;
@@ -83,7 +93,21 @@ public class ConnectorTestCase
    public void testGetConnection1() throws Throwable
    {
       assertNotNull(connectionFactory1);
-      Snmp4JConnection connection1 = connectionFactory1.getConnection();
+      Snmp4JConnection connection1 = connectionFactory1.getConnection(InetAddress.getLoopbackAddress(), "community");
+      assertNotNull(connection1);
+      connection1.close();
+   }
+
+   /**
+    * Test getConnection
+    *
+    * @exception Throwable Thrown if case of an error
+    */
+   @Test
+   public void testGetConnection2() throws Throwable
+   {
+      assertNotNull(connectionFactory1);
+      Snmp4JConnection connection1 = connectionFactory1.getConnection(InetAddress.getLoopbackAddress(), 161, "community");
       assertNotNull(connection1);
       connection1.close();
    }

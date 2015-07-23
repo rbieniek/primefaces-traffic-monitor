@@ -21,6 +21,8 @@
  */
 package de.bieniekconsulting.trafficmonitor.connector.snmp.mbean;
 
+import java.net.InetAddress;
+
 /**
  * Snmp4JMBean
  *
@@ -32,5 +34,10 @@ public interface Snmp4JMBean
     * Call me
     * @throws Exception exception
     */
-   public void callMe() throws Exception;
+   public void callMe(InetAddress address, String community) throws Exception;
+   /**
+    * Call me
+    * @throws Exception exception
+    */
+   public void callMe(InetAddress address, int port, String community) throws Exception;
 }

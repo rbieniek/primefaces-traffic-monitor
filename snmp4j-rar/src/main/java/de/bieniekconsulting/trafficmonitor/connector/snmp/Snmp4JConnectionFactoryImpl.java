@@ -21,11 +21,12 @@
  */
 package de.bieniekconsulting.trafficmonitor.connector.snmp;
 
+import java.net.InetAddress;
+
 import org.jboss.logging.Logger;
 
 import javax.naming.NamingException;
 import javax.naming.Reference;
-
 import javax.resource.ResourceException;
 import javax.resource.spi.ConnectionManager;
 
@@ -36,10 +37,15 @@ import javax.resource.spi.ConnectionManager;
  */
 public class Snmp4JConnectionFactoryImpl implements Snmp4JConnectionFactory
 {
-   /** The serial version UID */
-   private static final long serialVersionUID = 1L;
 
-   /** The logger */
+   /**
+	 * 
+	 */
+	private static final long serialVersionUID = 6739041490388885457L;
+
+	private static final int SNMP_PORT = 161;
+	
+/** The logger */
    private static Logger log = Logger.getLogger(Snmp4JConnectionFactoryImpl.class.getName());
 
    /** Reference */
@@ -77,12 +83,26 @@ public class Snmp4JConnectionFactoryImpl implements Snmp4JConnectionFactory
     * @exception ResourceException Thrown if a connection can't be obtained
     */
    @Override
-   public Snmp4JConnection getConnection() throws ResourceException
+   public Snmp4JConnection getConnection(InetAddress address, String community) throws ResourceException
    {
-      log.trace("getConnection()");
-      return (Snmp4JConnection)connectionManager.allocateConnection(mcf, null);
+	   return getConnection(address, SNMP_PORT, community);
    }
 
+   
+   /** 
+    * Get connection from factory
+    *
+    * @return Snmp4JConnection instance
+    * @exception ResourceException Thrown if a connection can't be obtained
+    */
+   @Override
+   public Snmp4JConnection getConnection(InetAddress address, int port, String community) throws ResourceException
+   {
+      log.trace("getConnection()");
+      return (Snmp4JConnection)connectionManager.allocateConnection(mcf, 
+    		  new Snmp4JConnectionRequestInfo(address, port, community));
+   }
+   
    /**
     * Get the Reference instance.
     *

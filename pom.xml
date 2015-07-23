@@ -140,7 +140,7 @@
     <version.org.easytesting.core>2.0M10</version.org.easytesting.core>
     <version.junit.junit>4.11</version.junit.junit>
     <version.org.mockito>1.9.5</version.org.mockito>
-
+    <version.shrinkwrap.resolvers>2.2.0-beta-2</version.shrinkwrap.resolvers>
   </properties>
 
   <modules>
@@ -342,6 +342,13 @@
 	<artifactId>fest-assert-core</artifactId>
 	<version>${version.org.easytesting.core}</version>
 	<scope>test</scope>
+      </dependency>
+      <dependency>
+	<groupId>org.jboss.shrinkwrap.resolver</groupId>
+	<artifactId>shrinkwrap-resolver-depchain</artifactId>
+	<version>${version.shrinkwrap.resolvers}</version>
+	<scope>test</scope>
+	<type>pom</type>
       </dependency>
     </dependencies>
   </dependencyManagement>
