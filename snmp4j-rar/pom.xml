@@ -48,6 +48,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>de.bieniekconsulting.trafficmonitor</groupId>
+      <artifactId>snmp-objects</artifactId>
+      <version>${version.trafficmonitor}</version>
+    </dependency>
+    <dependency>
       <groupId>org.snmp4j</groupId>
       <artifactId>snmp4j</artifactId>
     </dependency>

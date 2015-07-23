@@ -144,6 +144,7 @@
   </properties>
 
   <modules>
+    <module>snmp-objects</module>
     <module>snmp4j-rar</module>
   </modules>
 
