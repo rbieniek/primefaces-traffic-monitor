@@ -29,6 +29,7 @@ import javax.naming.InitialContext;
 
 import de.bieniekconsulting.trafficmonitor.connector.snmp.Snmp4JConnection;
 import de.bieniekconsulting.trafficmonitor.connector.snmp.Snmp4JConnectionFactory;
+import de.bieniekconsulting.trafficmonitor.data.snmp.SystemInfo;
 
 /**
  * Snmp4JMBeanImpl
@@ -90,9 +91,9 @@ public class Snmp4JMBeanImpl implements Snmp4JMBean
     * @throws Exception exception
     */
    @Override
-   public void callMe(InetAddress address, String community) throws Exception
+   public SystemInfo systemInfo(InetAddress address, String community) throws Exception
    {
-      getConnection(address, community).callMe();
+      return getConnection(address, community).systemInfo();
    }
 
    /**
@@ -100,9 +101,9 @@ public class Snmp4JMBeanImpl implements Snmp4JMBean
     * @throws Exception exception
     */
    @Override
-   public void callMe(InetAddress address, int port, String community) throws Exception
+   public SystemInfo systemInfo(InetAddress address, int port, String community) throws Exception
    {
-      getConnection(address, port, community).callMe();
+      return getConnection(address, port, community).systemInfo();
    }
 
    /**

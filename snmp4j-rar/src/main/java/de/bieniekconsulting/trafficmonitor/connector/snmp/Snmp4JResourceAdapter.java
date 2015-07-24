@@ -24,9 +24,17 @@ package de.bieniekconsulting.trafficmonitor.connector.snmp;
 import de.bieniekconsulting.trafficmonitor.connector.snmp.inflow.Snmp4JActivation;
 import de.bieniekconsulting.trafficmonitor.connector.snmp.inflow.Snmp4JActivationSpec;
 
+import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jboss.logging.Logger;
+import org.snmp4j.SNMP4JSettings;
+import org.snmp4j.Snmp;
+import org.snmp4j.TransportMapping;
+import org.snmp4j.smi.UdpAddress;
+import org.snmp4j.transport.DefaultUdpTransportMapping;
+import org.snmp4j.util.CommonTimer;
+import org.snmp4j.util.TimerFactory;
 
 import javax.resource.ResourceException;
 import javax.resource.spi.ActivationSpec;
@@ -35,7 +43,9 @@ import javax.resource.spi.Connector;
 import javax.resource.spi.ResourceAdapter;
 import javax.resource.spi.ResourceAdapterInternalException;
 import javax.resource.spi.TransactionSupport;
+import javax.resource.spi.UnavailableException;
 import javax.resource.spi.endpoint.MessageEndpointFactory;
+import javax.resource.spi.work.WorkManager;
 import javax.transaction.xa.XAResource;
 
 /**
@@ -58,6 +68,11 @@ public class Snmp4JResourceAdapter implements ResourceAdapter, java.io.Serializa
    /** The activations by activation spec */
    private ConcurrentHashMap<Snmp4JActivationSpec, Snmp4JActivation> activations;
 
+   private WorkManager workManager;
+   
+   private TransportMapping<UdpAddress> transport;
+   private Snmp snmp;
+   
    /**
     * Default constructor
     */
@@ -108,11 +123,25 @@ public class Snmp4JResourceAdapter implements ResourceAdapter, java.io.Serializa
     * @param ctx A bootstrap context containing references 
     * @throws ResourceAdapterInternalException indicates bootstrap failure.
     */
-   public void start(BootstrapContext ctx)
-      throws ResourceAdapterInternalException
+   public void start(BootstrapContext ctx) throws ResourceAdapterInternalException
    {
       log.tracef("start(%s)", ctx);
 
+      this.workManager = ctx.getWorkManager();
+      
+      SNMP4JSettings.setTimerFactory(new CommonTimerImplFactory(ctx));
+      SNMP4JSettings.setThreadFactory(new Snmp4JThreadFactory(ctx.getWorkManager()));
+      
+      try {
+    	transport = new DefaultUdpTransportMapping();
+		snmp = new Snmp(transport);
+
+		transport.listen();
+      } catch (IOException e) {
+		log.error("cannot start embedded SNMP isntance", e);
+			
+		throw new ResourceAdapterInternalException(e);
+      }
    }
 
    /**
@@ -123,6 +152,12 @@ public class Snmp4JResourceAdapter implements ResourceAdapter, java.io.Serializa
    {
       log.trace("stop()");
 
+      try {
+    	  transport.close();
+      } catch(IOException e) {
+    	  log.warn("cannot close embedded SNMP transport", e);
+      }
+      this.workManager = null;
    }
 
    /**
@@ -137,6 +172,15 @@ public class Snmp4JResourceAdapter implements ResourceAdapter, java.io.Serializa
    {
       log.tracef("getXAResources(%s)", specs.toString());
       return null;
+   }
+
+   /**
+    * This method returns the current work manager.
+    * 
+    * @return
+    */
+   public WorkManager getWorkManager() {
+	   return workManager;
    }
 
    /** 
@@ -167,5 +211,12 @@ public class Snmp4JResourceAdapter implements ResourceAdapter, java.io.Serializa
       boolean result = true;
       return result;
    }
+
+/**
+ * @return the snmp
+ */
+public Snmp getSnmp() {
+	return snmp;
+}
 
 }

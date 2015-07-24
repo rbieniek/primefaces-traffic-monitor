@@ -25,8 +25,6 @@ import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.jboss.logging.Logger;
-
 import javax.resource.ResourceException;
 import javax.resource.spi.ConnectionDefinition;
 import javax.resource.spi.ConnectionManager;
@@ -35,8 +33,9 @@ import javax.resource.spi.ManagedConnection;
 import javax.resource.spi.ManagedConnectionFactory;
 import javax.resource.spi.ResourceAdapter;
 import javax.resource.spi.ResourceAdapterAssociation;
-
 import javax.security.auth.Subject;
+
+import org.jboss.logging.Logger;
 
 /**
  * Snmp4JManagedConnectionFactory
@@ -57,7 +56,7 @@ public class Snmp4JManagedConnectionFactory implements ManagedConnectionFactory,
    private static Logger log = Logger.getLogger(Snmp4JManagedConnectionFactory.class.getName());
 
    /** The resource adapter */
-   private ResourceAdapter ra;
+   private Snmp4JResourceAdapter ra;
 
    /** The logwriter */
    private PrintWriter logwriter;
@@ -102,11 +101,10 @@ public class Snmp4JManagedConnectionFactory implements ManagedConnectionFactory,
     * @throws ResourceException generic exception
     * @return ManagedConnection instance 
     */
-   public ManagedConnection createManagedConnection(Subject subject,
-         ConnectionRequestInfo cxRequestInfo) throws ResourceException
+   public ManagedConnection createManagedConnection(Subject subject, ConnectionRequestInfo cxRequestInfo) throws ResourceException
    {
       log.tracef("createManagedConnection(%s, %s)", subject, cxRequestInfo);
-      return new Snmp4JManagedConnection(this);
+      return new Snmp4JManagedConnection(this, subject, (Snmp4JConnectionRequestInfo)cxRequestInfo, ra.getSnmp());
    }
 
    /**
@@ -118,18 +116,22 @@ public class Snmp4JManagedConnectionFactory implements ManagedConnectionFactory,
     * @throws ResourceException generic exception
     * @return ManagedConnection if resource adapter finds an acceptable match otherwise null 
     */
+   @SuppressWarnings("rawtypes")
    public ManagedConnection matchManagedConnections(Set connectionSet,
-         Subject subject, ConnectionRequestInfo cxRequestInfo) throws ResourceException
-   {
+         Subject subject, ConnectionRequestInfo cxRequestInfo) throws ResourceException {
       log.tracef("matchManagedConnections(%s, %s, %s)", connectionSet, subject, cxRequestInfo);
       ManagedConnection result = null;
       Iterator it = connectionSet.iterator();
+      
       while (result == null && it.hasNext())
       {
          ManagedConnection mc = (ManagedConnection)it.next();
-         if (mc instanceof Snmp4JManagedConnection)
-         {
-            result = mc;
+         if (mc instanceof Snmp4JManagedConnection) {
+        	 Snmp4JManagedConnection smc = (Snmp4JManagedConnection)mc;
+        	 
+        	 if((smc.getRequestInfo() == null && cxRequestInfo == null) 
+        			 || (smc.getRequestInfo() != null && cxRequestInfo != null && smc.getRequestInfo().equals(cxRequestInfo))) 
+        		 result = mc;
          }
 
       }
@@ -179,7 +181,7 @@ public class Snmp4JManagedConnectionFactory implements ManagedConnectionFactory,
    public void setResourceAdapter(ResourceAdapter ra)
    {
       log.tracef("setResourceAdapter(%s)", ra);
-      this.ra = ra;
+      this.ra = (Snmp4JResourceAdapter)ra;
    }
 
    /** 

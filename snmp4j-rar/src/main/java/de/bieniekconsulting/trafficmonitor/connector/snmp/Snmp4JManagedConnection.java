@@ -21,11 +21,25 @@
  */
 package de.bieniekconsulting.trafficmonitor.connector.snmp;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import org.jboss.logging.Logger;
+import org.snmp4j.CommunityTarget;
+import org.snmp4j.PDU;
+import org.snmp4j.Snmp;
+import org.snmp4j.event.ResponseEvent;
+import org.snmp4j.mp.SnmpConstants;
+import org.snmp4j.smi.OID;
+import org.snmp4j.smi.OctetString;
+import org.snmp4j.smi.UdpAddress;
+import org.snmp4j.smi.Variable;
+import org.snmp4j.smi.VariableBinding;
+
+import de.bieniekconsulting.trafficmonitor.data.snmp.SystemInfo;
 
 import javax.resource.NotSupportedException;
 import javax.resource.ResourceException;
@@ -35,7 +49,7 @@ import javax.resource.spi.ConnectionRequestInfo;
 import javax.resource.spi.LocalTransaction;
 import javax.resource.spi.ManagedConnection;
 import javax.resource.spi.ManagedConnectionMetaData;
-
+import javax.resource.spi.work.WorkManager;
 import javax.security.auth.Subject;
 import javax.transaction.xa.XAResource;
 
@@ -44,10 +58,19 @@ import javax.transaction.xa.XAResource;
  *
  * @version $Revision: $
  */
-public class Snmp4JManagedConnection implements ManagedConnection
-{
+public class Snmp4JManagedConnection implements ManagedConnection {
 
-   /** The logger */
+   static final OID OID_sys = new OID(new int[] {1, 3, 6, 1, 2, 1, 1});
+   static final OID OID_sysORLastChange = new OID(new int[] {1, 3, 6, 1, 2, 1, 1, 8});
+   static final OID OID_sysServices = new OID(new int[] {1, 3, 6, 1, 2, 1, 1, 7});
+   static final OID OID_sysLocation = new OID(new int[] {1, 3, 6, 1, 2, 1, 1, 6});
+   static final OID OID_sysName = new OID(new int[] {1, 3, 6, 1, 2, 1, 1, 5});
+   static final OID OID_sysContact = new OID(new int[] {1, 3, 6, 1, 2, 1, 1, 4});
+   static final OID OID_sysUpTime = new OID(new int[] {1, 3, 6, 1, 2, 1, 1, 3});
+   static final OID OID_sysObjectID = new OID(new int[] {1, 3, 6, 1, 2, 1, 1, 2});
+   static final OID OID_sysDescr = new OID(new int[] {1, 3, 6, 1, 2, 1, 1, 1});
+
+/** The logger */
    private static Logger log = Logger.getLogger(Snmp4JManagedConnection.class.getName());
 
    /** The logwriter */
@@ -62,16 +85,28 @@ public class Snmp4JManagedConnection implements ManagedConnection
    /** Connection */
    private Snmp4JConnectionImpl connection;
 
+   private Snmp4JConnectionRequestInfo requestInfo;
+
+   private Subject subject;
+   
+   private Snmp snmp;
+   
    /**
     * Default constructor
     * @param mcf mcf
+    * @param subject 
+    * @param cxRequestInfo 
+    * @param workManager 
     */
-   public Snmp4JManagedConnection(Snmp4JManagedConnectionFactory mcf)
+   public Snmp4JManagedConnection(Snmp4JManagedConnectionFactory mcf, Subject subject, Snmp4JConnectionRequestInfo cxRequestInfo, Snmp snmp)
    {
       this.mcf = mcf;
       this.logwriter = null;
       this.listeners = Collections.synchronizedList(new ArrayList<ConnectionEventListener>(1));
       this.connection = null;
+      this.requestInfo = cxRequestInfo;
+      this.subject = subject;
+      this.snmp = snmp;
    }
 
    /**
@@ -83,11 +118,11 @@ public class Snmp4JManagedConnection implements ManagedConnection
     * @return generic Object instance representing the connection handle. 
     * @throws ResourceException generic exception if operation fails
     */
-   public Object getConnection(Subject subject,
-      ConnectionRequestInfo cxRequestInfo) throws ResourceException
+   public Object getConnection(Subject subject, ConnectionRequestInfo cxRequestInfo) throws ResourceException
    {
       log.trace("getConnection()");
       connection = new Snmp4JConnectionImpl(this, mcf);
+      
       return connection;
    }
 
@@ -234,12 +269,65 @@ public class Snmp4JManagedConnection implements ManagedConnection
    }
 
    /**
-    * Call me
+    * return the connection request info currently assigned to this managed connection
+    * 
+    * @return
     */
-   void callMe()
-   {
-      log.trace("callMe()");
-
+   public Snmp4JConnectionRequestInfo getRequestInfo() {
+	   return requestInfo;
    }
 
+   public SystemInfo systemInfo() throws ResourceException {
+	   SystemInfo systemInfo = null;
+	   
+	   CommunityTarget target = new CommunityTarget();
+	   
+	   target.setCommunity(new OctetString(requestInfo.getCommunity()));
+	   target.setAddress(new UdpAddress(requestInfo.getAddress(), requestInfo.getPort()));
+	   target.setRetries(2);
+	   target.setTimeout(1500);
+	   target.setVersion(SnmpConstants.version2c);
+	   
+	   OID curOid = OID_sys;
+	   systemInfo = new SystemInfo();
+	   
+	   while(curOid.startsWith(OID_sys)) {
+		   try {
+			   PDU pdu = new PDU();
+			   
+			   pdu.add(new VariableBinding(curOid));
+			   			   
+			   ResponseEvent event = snmp.getNext(pdu, target);
+			   
+			   if(event == null)
+				   break;
+			   
+			   PDU response = event.getResponse();
+			   
+			   if(response == null)
+				   break;
+
+			   List<VariableBinding> bindings = response.getBindingList(curOid);
+
+			   if(bindings.isEmpty())
+				   break;
+			   
+			   for(VariableBinding vb : bindings) {
+
+				   if(vb.getOid().equals(OID_sysDescr)) {
+					   systemInfo.setDescription(vb.getVariable().toString());
+				   }
+				   
+				   curOid = vb.getOid();
+			   }
+		   } catch (IOException e) {
+			   log.warn("cannot execute SNMP request", e);
+			   
+			   throw new ResourceException(e);
+		   }
+		   
+	   }
+	   
+	   return systemInfo;
+   }
 }

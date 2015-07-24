@@ -61,6 +61,10 @@
       <artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>log4j-over-slf4j</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging</artifactId>
       <scope>provided</scope>
@@ -148,6 +152,18 @@
       <version>${version.shrinkwrap.resolvers}</version>
       <scope>test</scope>
       <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.snmp4j</groupId>
+      <artifactId>snmp4j-agent</artifactId>
+      <version>${version.org.snmp4j.agent}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>${version.org.slf4j}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   

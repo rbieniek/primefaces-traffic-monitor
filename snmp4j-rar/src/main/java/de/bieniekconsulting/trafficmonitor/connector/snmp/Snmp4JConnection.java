@@ -21,6 +21,10 @@
  */
 package de.bieniekconsulting.trafficmonitor.connector.snmp;
 
+import javax.resource.ResourceException;
+
+import de.bieniekconsulting.trafficmonitor.data.snmp.SystemInfo;
+
 /**
  * Snmp4JConnection
  *
@@ -28,12 +32,15 @@ package de.bieniekconsulting.trafficmonitor.connector.snmp;
  */
 public interface Snmp4JConnection
 {
-   /**
-    * Call me
-    */
-   public void callMe();
-   /**
-    * Close
-    */
-   public void close();
+	/**
+	 * Get the system info (OID 1.3.6.1.2.2.1 subtree)
+	 * 
+	 * @return
+	 */
+	public SystemInfo systemInfo() throws ResourceException;	
+	
+	/**
+	 * Close the connection
+	 */
+	public void close();
 }

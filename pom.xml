@@ -39,6 +39,10 @@
       <id>fungal</id>
       <url>http://jesperpedersen.github.com/fungal/maven2</url>
     </repository>
+    <repository>
+      <id>oosnmp</id>
+      <url>https://oosnmp.net/dist/release</url>
+    </repository>
   </repositories>
 
   <build>
@@ -135,7 +139,8 @@
     <version.org.jboss.ironjacamar>1.2.4.Final</version.org.jboss.ironjacamar>
     <version.org.jboss.logging>3.3.0.Final</version.org.jboss.logging>
 
-    <version.org.snmp4j>1.10.1</version.org.snmp4j>
+    <version.org.snmp4j>2.3.4</version.org.snmp4j>
+    <version.org.snmp4j.agent>2.4.0</version.org.snmp4j.agent>
 
     <version.org.easytesting.core>2.0M10</version.org.easytesting.core>
     <version.junit.junit>4.11</version.junit.junit>
@@ -318,6 +323,18 @@
         <groupId>org.snmp4j</groupId>
         <artifactId>snmp4j</artifactId>
         <version>${version.org.snmp4j}</version>
+	<exclusions>
+          <exclusion>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+          </exclusion>
+	</exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.snmp4j</groupId>
+        <artifactId>snmp4j-agent</artifactId>
+        <version>${version.org.snmp4j.agent}</version>
+	<scope>test</scope>
 	<exclusions>
           <exclusion>
             <groupId>log4j</groupId>

@@ -21,7 +21,11 @@
  */
 package de.bieniekconsulting.trafficmonitor.connector.snmp;
 
+import javax.resource.ResourceException;
+
 import org.jboss.logging.Logger;
+
+import de.bieniekconsulting.trafficmonitor.data.snmp.SystemInfo;
 
 /**
  * Snmp4JConnectionImpl
@@ -53,9 +57,18 @@ public class Snmp4JConnectionImpl implements Snmp4JConnection
    /**
     * Call me
     */
-   public void callMe()
-   {
-      mc.callMe();
+   public SystemInfo systemInfo() throws ResourceException {
+	   SystemInfo systemInfo = null;
+	   
+	   try {
+		   systemInfo = mc.systemInfo();
+	   } catch (ResourceException e) {
+		   log.warn("cannot retrieve system info", e);
+		   
+		   throw e;
+	   }
+	   
+	   return systemInfo;
    }
 
    /**
